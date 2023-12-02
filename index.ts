@@ -10,28 +10,27 @@ async function main() {
 
     const parsedHTML = parse(html)
     const links = parsedHTML.getElementsByTagName('a')
+    const urlsToCheck = new Set<string>()
 
-    for (let index = 0; index < links.length; index++) {
-        const link = links[index];
+    links.forEach(link => {
+      const href = link.getAttribute('href')
+      const url = baseURL + href
 
-        const linkHref = link?.getAttribute('href')
+      urlsToCheck.add(url)
+    });
 
-        if (!linkHref)
-            return
+    for (const url of urlsToCheck) {
+      try {
+          const linkIsValid = await checkLink(url)
 
-        const url = baseURL + linkHref
+          if (!linkIsValid)
+              invalidLinks.push(url)
 
-        try {
-            const linkIsValid = await checkLink(url)
-
-            if (!linkIsValid)
-                invalidLinks.push(url)
-
-        } catch (error) {
-            invalidLinks.push(url)
-        }
+      } catch (error) {
+          invalidLinks.push(url)
+      }
     }
-
+    
     console.log(invalidLinks)
 }
 
