@@ -17,12 +17,17 @@ async function fetchLinks(url: string, baseURL: string) {
   const html = await response.text()
   const parsedHTML = parse(html)
   const links = parsedHTML.getElementsByTagName('a')
+  const urls: string[] = []
 
-  return links.map((link) => {
-    const href = link.getAttribute('href')
+  for (let index = 0; index < links.length; index++) {
+    const link = links[index];
+    const href = link?.getAttribute('href')
     const url = baseURL + href
-    return url
-  })
+
+    urls.push(url)
+  }
+
+  return urls
 }
 
 function getLinksToCheck(urls: string[]) {
