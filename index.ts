@@ -1,8 +1,11 @@
 import { parse } from 'node-html-parser';
 
 async function main() {
-  const baseURL = 'https://vibefusion.be'
-  const links = await fetchLinks('https://vibefusion.be', baseURL)
+  const BASE_URL = 'https://vibefusion.be'
+  const URL_TO_CHECK = 'https://vibefusion.be'
+
+  const baseURL = BASE_URL
+  const links = await fetchLinks(URL_TO_CHECK, baseURL)
   const urlsToCheck = new Set([...getLinksToCheck(links)])
   const invalidLinks = await checkLinks(urlsToCheck)
 
