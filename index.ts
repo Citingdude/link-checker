@@ -5,39 +5,52 @@ async function main() {
   const URL_TO_CHECK = 'https://vibefusion.be'
 
   const baseURL = BASE_URL
-  const links = await fetchLinks(URL_TO_CHECK, baseURL)
-  const urlsToCheck = new Set([...getLinksToCheck(links)])
+  const urlsToCheck = await fetchLinks(URL_TO_CHECK, baseURL)
   const invalidLinks = await checkLinks(urlsToCheck)
 
   console.log(invalidLinks)
 }
 
 async function fetchLinks(url: string, baseURL: string) {
-  const response = await fetch(url)
-  const html = await response.text()
-  const parsedHTML = parse(html)
-  const links = parsedHTML.getElementsByTagName('a')
-  const urls: string[] = []
+  try {
+    const response = await fetch(url)
+    const text = await response.text()
+    const html = parse(text)
+    const links = html.getElementsByTagName('a')
+    const urls = new Set<string>()
 
-  for (let index = 0; index < links.length; index++) {
-    const link = links[index];
-    const href = link?.getAttribute('href')
-    const url = baseURL + href
+    for (let index = 0; index < links.length; index++) {
+      const link = links[index];
+      const href = link?.getAttribute('href')
+      const url = baseURL + href
 
-    urls.push(url)
+      urls.add(url)
+    }
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url)
+        const text = await response.text()
+        const html = parse(text)
+        const links = html.getElementsByTagName('a')
+
+
+        links.forEach(link => {
+          const href = link.getAttribute('href')
+          const url = baseURL + href
+          urls.add(url)
+        });
+
+      } catch (error) {
+
+      }
+    }
+
+    return urls
+  } catch (error) {
+    return new Set<string>()
   }
 
-  return urls
-}
-
-function getLinksToCheck(urls: string[]) {
-  const urlSet = new Set<string>()
-
-  urls.forEach((url) => {
-    urlSet.add(url)
-  })
-
-  return urlSet
 }
 
 async function checkLink(url: string) {
