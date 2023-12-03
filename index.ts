@@ -1,15 +1,13 @@
 import { parse } from 'node-html-parser';
 
-async function main() {    
-    const baseURL = 'https://vibefusion.be'
-    const links = await fetchLinks('https://vibefusion.be', baseURL)
-    const urlsToCheck = new Set([...getLinksToCheck(links)])
-    const invalidLinks = await checkLinks(urlsToCheck)
-    
-    console.log(invalidLinks)
+async function main() {
+  const baseURL = 'https://vibefusion.be'
+  const links = await fetchLinks('https://vibefusion.be', baseURL)
+  const urlsToCheck = new Set([...getLinksToCheck(links)])
+  const invalidLinks = await checkLinks(urlsToCheck)
+
+  console.log(invalidLinks)
 }
-
-
 
 async function fetchLinks(url: string, baseURL: string) {
   const response = await fetch(url)
@@ -45,13 +43,13 @@ async function checkLinks(urls: Set<string>) {
 
   for (const url of urls) {
     try {
-        const linkIsValid = await checkLink(url)
+      const linkIsValid = await checkLink(url)
 
-        if (!linkIsValid)
-            invalidLinks.push(url)
+      if (!linkIsValid)
+        invalidLinks.push(url)
 
     } catch (error) {
-        invalidLinks.push(url)
+      invalidLinks.push(url)
     }
   }
 
