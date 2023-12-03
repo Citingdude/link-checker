@@ -22,6 +22,8 @@ async function fetchLinks(url: string, baseURL: string) {
     for (let index = 0; index < links.length; index++) {
       const link = links[index];
       const href = link?.getAttribute('href')
+      if (href?.includes('http'))
+        continue
       const url = baseURL + href
 
       urls.add(url)
@@ -34,9 +36,10 @@ async function fetchLinks(url: string, baseURL: string) {
         const html = parse(text)
         const links = html.getElementsByTagName('a')
 
-
         links.forEach(link => {
           const href = link.getAttribute('href')
+          if (href?.includes('http'))
+            return
           const url = baseURL + href
           urls.add(url)
         });
