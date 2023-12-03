@@ -2,15 +2,9 @@ import { parse } from 'node-html-parser';
 
 async function main() {    
     const baseURL = 'https://vibefusion.be'
-
-    const invalidLinks: string[] = []
-    const urlsToCheck = new Set<string>()
-
     const links = await fetchLinks('https://vibefusion.be', baseURL)
-
-    setLinksToCheck(links, urlsToCheck)
-
-    checkLinks(urlsToCheck, invalidLinks)
+    const urlsToCheck = new Set([...getLinksToCheck(links)])
+    const invalidLinks = await checkLinks(urlsToCheck)
     
     console.log(invalidLinks)
 }
@@ -30,10 +24,14 @@ async function fetchLinks(url: string, baseURL: string) {
   })
 }
 
-function setLinksToCheck(urls: string[], urlSet: Set<string>) {
+function getLinksToCheck(urls: string[]) {
+  const urlSet = new Set<string>()
+
   urls.forEach((url) => {
     urlSet.add(url)
-  })    
+  })
+
+  return urlSet
 }
 
 async function checkLink(url: string) {
@@ -42,7 +40,9 @@ async function checkLink(url: string) {
   return response.status === 200
 }
 
-async function checkLinks(urls: Set<string>, invalidLinks: string[]) {
+async function checkLinks(urls: Set<string>) {
+  const invalidLinks: string[] = []
+
   for (const url of urls) {
     try {
         const linkIsValid = await checkLink(url)
@@ -54,6 +54,8 @@ async function checkLinks(urls: Set<string>, invalidLinks: string[]) {
         invalidLinks.push(url)
     }
   }
+
+  return invalidLinks
 }
 
 main()
