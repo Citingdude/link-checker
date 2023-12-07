@@ -1,17 +1,6 @@
 import { parse } from 'node-html-parser';
 
-async function main() {
-  const BASE_URL = 'https://vibefusion.be'
-  const URL_TO_CHECK = 'https://vibefusion.be'
-
-  const baseURL = BASE_URL
-  const urlsToCheck = await fetchLinks(URL_TO_CHECK, baseURL)
-  const invalidLinks = await checkLinks(urlsToCheck)
-
-  console.log(invalidLinks)
-}
-
-async function fetchLinks(url: string, baseURL: string) {
+export async function fetchLinks(url: string, baseURL: string) {
   try {
     const response = await fetch(url)
     const text = await response.text()
@@ -56,18 +45,18 @@ async function fetchLinks(url: string, baseURL: string) {
 
 }
 
-async function checkLink(url: string) {
+async function validateLink(url: string) {
   console.log('Checking url: ' + url)
   const response = await fetch(url)
   return response.status === 200
 }
 
-async function checkLinks(urls: Set<string>) {
+export async function validateLinks(urls: Set<string>) {
   const invalidLinks: string[] = []
 
   for (const url of urls) {
     try {
-      const linkIsValid = await checkLink(url)
+      const linkIsValid = await validateLink(url)
 
       if (!linkIsValid)
         invalidLinks.push(url)
@@ -79,5 +68,3 @@ async function checkLinks(urls: Set<string>) {
 
   return invalidLinks
 }
-
-main()
