@@ -1,4 +1,4 @@
-import { fetchLinks, validateLinks } from "./url-checker"
+import { fetchLinks, validateLinks } from "app/url-checker"
 
 async function main() {
   const BASE_URL = 'https://vibefusion.be'
