@@ -45,13 +45,13 @@ export async function fetchLinks(url: string, baseURL: string) {
 
 }
 
-async function validateLink(url: string) {
+async function validateLink(url: string): Promise<boolean> {
   console.log('Checking url: ' + url)
   const response = await fetch(url)
   return response.status === 200
 }
 
-export async function validateLinks(urls: Set<string>) {
+export async function fetchInvalidLinks(urls: Set<string>): Promise<string[]> {
   const invalidLinks: string[] = []
 
   for (const url of urls) {
