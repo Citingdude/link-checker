@@ -1,8 +1,9 @@
 import { parse } from 'node-html-parser';
 
-export async function fetchLinks(url: string, baseURL: string) {
+export async function fetchLinks(url: string) {
   try {
     const response = await fetch(url)
+    const baseURL = new URL(url).origin
     const text = await response.text()
     const html = parse(text)
     const links = html.getElementsByTagName('a')
@@ -46,8 +47,8 @@ export async function fetchLinks(url: string, baseURL: string) {
 }
 
 async function validateLink(url: string): Promise<boolean> {
-  console.log('Checking url: ' + url)
   const response = await fetch(url)
+  console.log('Checking url: ' + url + ' ' + response.status)
   return response.status === 200
 }
 
